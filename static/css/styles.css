@@ -1,0 +1,698 @@
+/*
+--- ==================================== ---
+--- ULTRA PRO MAX INVOICE APP STYLESHEET ---
+--- ==================================== ---
+*/
+
+/* --- 1. FONT IMPORT & ROOT VARIABLES --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #4A90E2;      /* A modern, professional blue */
+    --primary-hover: #357ABD;      /* A darker blue for hover */
+    --secondary-color: #6c757d;    /* Grey for cancel buttons */
+    --secondary-hover: #5a6268;
+    --danger-color: #e74c3c;       /* A modern red for delete */
+    --danger-hover: #c0392b;
+    --success-color: #2ecc71;      /* Green for success messages */
+    --error-color: #e74c3c;        /* Red for error messages */
+    --info-color: #3498db;         /* Blue for info messages */
+
+    --bg-color: #f8f9fa;           /* Main page background */
+    --surface-color: #ffffff;      /* Card/form backgrounds */
+    --text-color: #333333;         /* Main text */
+    --text-light: #555555;         /* Lighter text for labels */
+    --border-color: #dee2e6;       /* Borders for inputs and tables */
+    
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.07);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+/* --- 2. GLOBAL RESET & BODY --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* --- 3. MAIN NAVIGATION --- */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    margin: 0 auto 30px auto;
+    max-width: 1000px;
+    padding: 10px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.main-nav a:hover {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+}
+
+.main-nav a.active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    box-shadow: var(--shadow-soft);
+}
+
+/* --- 4. FLASH MESSAGES (Alerts) --- */
+.flash-messages {
+    max-width: 1000px;
+    margin: -10px auto 20px auto;
+}
+.flash {
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+.flash-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.flash-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.flash-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* --- 5. BUTTONS --- */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+}
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+}
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+/* --- 6. FORMS (Profile, Customer, Invoice) --- */
+.form-container {
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+    background: var(--surface-color);
+    padding: 30px 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+}
+
+.form-container h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-color);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grid span classes */
+.form-group.span-2 { grid-column: span 2; }
+.form-group.span-3 { grid-column: span 3; }
+.form-group.span-4 { grid-column: span 4; }
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+/* --- 7. TABLES (Dashboard, Customers) --- */
+.container-header {
+    max-width: 1000px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-container {
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    overflow: hidden; /* For table border-radius */
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-container thead th {
+    background-color: var(--bg-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.table-container tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
+.table-container tbody td {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.table-container .actions {
+    text-align: right;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* --- 8. INVOICE FORM (Items Table) --- */
+.items-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.item-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.item-row.header {
+    font-weight: 600;
+    color: var(--text-light);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 0;
+}
+
+/* Sizing the item row inputs (THIS IS THE CORRECT, SINGLE BLOCK) */
+.item-row .item-name { flex: 4; }
+.item-row .item-hsn { flex: 2; }
+.item-row .item-qty { flex: 1; }
+.item-row .item-unit { flex: 1; } /* Styling for Unit */
+.item-row .item-rate { flex: 2; }
+.item-row .item-tax { flex: 1.5; }
+.item-row .item-total {
+    flex: 2;
+    text-align: right;
+    font-weight: 600;
+    padding-right: 10px;
+}
+.item-row .item-action {
+    flex-basis: 40px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+/* (THE CONFLICTING BLOCK HAS BEEN REMOVED) */
+
+.item-row .btn-remove {
+    flex-basis: 40px; /* Fixed width for the 'X' button */
+    padding: 8px 12px;
+    line-height: 1.2;
+    background-color: var(--danger-color);
+}
+.item-row .btn-remove:hover {
+    background-color: var(--danger-hover);
+}
+
+#add-item {
+    margin-top: 10px;
+    background-color: var(--primary-color);
+}
+#add-item:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- 9. INVOICE FORM (Summary) --- */
+.summary-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.summary-box {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    min-width: 350px;
+}
+
+.summary-box > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.summary-box .grand-total {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px solid var(--border-color);
+}
+
+/* --- 10. INVOICE PREVIEW --- */
+.invoice-preview {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--surface-color);
+    padding: 40px 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.invoice-header h1 {
+    color: var(--text-color);
+    margin: 0;
+}
+
+.invoice-parties {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.party-box {
+    line-height: 1.7;
+}
+.party-box strong {
+    color: var(--text-light);
+    font-weight: 600;
+}
+.party-box h4 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+}
+.party-box p {
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Style the preview table to look like a document */
+.table-container.preview {
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+}
+.table-container.preview th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    text-transform: none;
+    font-size: 1rem;
+}
+.table-container.preview td {
+    font-weight: 400;
+}
+.table-container.preview tbody tr:nth-child(even) {
+    background-color: var(--bg-color);
+}
+.table-container.preview tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.invoice-summary-final {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+.bank-details {
+    flex: 1.5;
+    font-size: 0.9rem;
+}
+.bank-details strong {
+    font-weight: 600;
+    color: var(--text-color);
+}
+.bank-details p {
+    font-size: 0.95rem;
+}
+
+.summary-box.final {
+    flex: 1;
+    max-width: 400px;
+    background: var(--surface-color);
+    border: none;
+    padding: 0;
+}
+
+/* --- 11. RESPONSIVENESS (Basic) --- */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack all form items */
+    }
+    .form-group.span-2,
+    .form-group.span-3,
+    .form-group.span-4 {
+        grid-column: span 1; /* Override span */
+    }
+    .invoice-parties {
+        grid-template-columns: 1fr; /* Stack party boxes */
+    }
+    .invoice-summary-final {
+        flex-direction: column;
+    }
+    .summary-box.final {
+        margin-top: 30px;
+        width: 100%;
+        max-width: 100%;
+    }
+    .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+    }
+    .main-nav a {
+        text-align: center;
+    }
+    .item-row {
+        /* This is tricky on mobile. A full solution
+           would involve cards, but for now, we'll
+           let it scroll horizontally. */
+        min-width: 700px;
+    }
+    .items-table {
+        overflow-x: auto;
+    }
+}
+/* --- 12. UPDATED INVOICE PREVIEW (PRO LAYOUT) --- */
+
+.invoice-parties-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 columns */
+    grid-template-rows: auto auto;
+    gap: 20px 30px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Grid layout for the 4 boxes */
+.party-box.supplier { grid-area: 1 / 1 / 3 / 2; } /* Row 1-3, Col 1 */
+.party-box.bill-to { grid-area: 1 / 2 / 2 / 3; } /* Row 1, Col 2 */
+.party-box.ship-to { grid-area: 2 / 2 / 3 / 3; } /* Row 2, Col 2 */
+.party-box.invoice-details { grid-area: 1 / 3 / 3 / 4; } /* Row 1-3, Col 3 */
+
+.party-box p {
+    font-size: 0.9rem;
+}
+
+/* Transport details bar */
+.transport-details {
+    display: flex;
+    justify-content: space-around;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+.transport-details .detail-item {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+}
+.transport-details .detail-item strong {
+    color: var(--text-light);
+}
+
+/* Final summary section */
+.invoice-summary-final {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 30px;
+    gap: 40px;
+}
+.summary-left {
+    flex: 1.5;
+}
+.summary-right {
+    flex: 1;
+    max-width: 400px;
+}
+
+/* Tax Summary Table */
+.tax-summary {
+    margin-bottom: 30px;
+}
+.tax-summary strong {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    display: block;
+}
+.tax-summary table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.tax-summary th,
+.tax-summary td {
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+}
+.tax-summary th {
+    background: var(--bg-color);
+}
+.tax-summary td {
+    text-align: right;
+}
+.tax-summary td:first-child {
+    text-align: left;
+}
+
+/* Terms and Bank details */
+.bank-details, .terms-details {
+    margin-bottom: 20px;
+}
+.bank-details strong, .terms-details strong {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+    display: block;
+}
+.bank-details p, .terms-details p {
+    font-size: 0.9rem;
+}
+
+/* Signature Box */
+.signature-box {
+    margin-top: 50px;
+    padding: 20px;
+    text-align: right;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+.signature-box p {
+    margin: 0;
+}
+
+/* Final Totals Box */
+.summary-box.final {
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+}
+/* --- 13. LAYOUT HOTFIX FOR INVOICE ITEMS --- */
+
+/*
+  This block fixes the "tiny inputs" problem by overriding
+  all other rules and setting a clear width and flex-basis.
+*/
+.items-table .item-row input,
+.items-table .item-row select {
+    width: 0;
+    min-width: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+/* Now we re-apply the correct flex-grow values */
+.items-table .item-row .item-name { flex-grow: 4; }
+.items-table .item-row .item-hsn { flex-grow: 2; }
+.items-table .item-row .item-qty { flex-grow: 1; }
+.items-table .item-row .item-unit { flex-grow: 1; }
+.items-table .item-row .item-rate { flex-grow: 2; }
+.items-table .item-row .item-tax { flex-grow: 1.5; }
+
+.items-table .item-row .item-total {
+    flex-grow: 2;
+    flex-shrink: 1;
+    flex-basis: 0;
+    width: auto; /* Allow span to size to content */
+}
+.items-table .item-row .item-action {
+    width: 40px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 40px;
+}
+/* Basic reset and font styling */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* This is the main content box you see in the middle of the screen */
+.container {
+    max-width: 800px;
+    margin: 40px auto; /* Centers the box */
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Basic styling for all headings */
+h1, h2, h3 {
+    color: #222;
+    margin-top: 0;
+}

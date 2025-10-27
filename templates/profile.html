@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Company Profile{% endblock %}
+
+{% block content %}
+    
+    <nav class="main-nav">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('customer_management') }}">Customers</a>
+        <a href="{{ url_for('profile') }}" class="active">Profile</a>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="form-container">
+        <h2>Your Company Profile</h2>
+        <p>This information will be used as the "Supplier" on all your invoices.</p>
+
+        <form action="{{ url_for('profile') }}" method="POST">
+            
+            <h3>Company Details</h3>
+            <div class="form-grid">
+                <div class="form-group span-2">
+                    <label for="name">Company Name</label>
+                    <input type="text" id="name" name="name" value="{{ profile.name if profile }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ profile.email if profile }}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" value="{{ profile.phone if profile }}">
+                </div>
+                <div class="form-group span-4">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3" required>{{ profile.address if profile }}</textarea>
+                </div>
+            </div>
+            
+            <h3>Tax & Bank Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="gstin">GSTIN</label>
+                    <input type="text" id="gstin" name="gstin" value="{{ profile.gstin if profile }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="pan">PAN</label>
+                    <input type="text" id="pan" name="pan" value="{{ profile.pan if profile }}">
+                </div>
+                <div class="form-group">
+                    <label for="bank_name">Bank Name</label>
+                    <input type="text" id="bank_name" name="bank_name" value="{{ profile.bank_name if profile }}">
+                </div>
+                <div class="form-group">
+                    <label for="account_no">Account No.</label>
+                    <input type="text" id="account_no" name="account_no" value="{{ profile.account_no if profile }}">
+                </div>
+                <div class="form-group">
+                    <label for="ifsc_code">IFSC Code</label>
+                    <input type="text" id="ifsc_code" name="ifsc_code" value="{{ profile.ifsc_code if profile }}">
+                </div>
+            </div>
+
+            <h3>Terms & Conditions</h3>
+            <div class="form-grid">
+                <div class="form-group span-4">
+                    <label for="terms_and_conditions">Default Terms & Conditions (optional)</label>
+                    <textarea id="terms_and_conditions" name="terms_and_conditions" rows="5" placeholder="e.g., 1. E&OE. 2. All Jurisdiction In Dadra & Nagar Haveli Only.">{{ profile.terms_and_conditions if profile }}</textarea>
+                </div>
+            </div>
+            <h3>Localization & Preferences</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="currency">Default Currency</label>
+                    <select id="currency" name="currency" required>
+                        <option value="USD" {% if not profile or profile.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                        <option value="INR" {% if profile and profile.currency == 'INR' %}selected{% endif %}>INR (₹)</option>
+                        <option value="EUR" {% if profile and profile.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                        <option value="GBP" {% if profile and profile.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                        <option value="JPY" {% if profile and profile.currency == 'JPY' %}selected{% endif %}>JPY (¥)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date_format">Date Format</label>
+                    <select id="date_format" name="date_format" required>
+                        <option value="DD/MM/YYYY" {% if not profile or profile.date_format == 'DD/MM/YYYY' %}selected{% endif %}>DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY" {% if profile and profile.date_format == 'MM/DD/YYYY' %}selected{% endif %}>MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD" {% if profile and profile.date_format == 'YYYY-MM-DD' %}selected{% endif %}>YYYY-MM-DD</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">Save Profile</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

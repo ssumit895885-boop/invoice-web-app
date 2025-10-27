@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Preview: Invoice {{ invoice.invoice_no }}{% endblock %}
+
+{% block content %}
+    
+    <nav class="main-nav">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('customer_management') }}">Customers</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </nav>
+
+    <div class="invoice-preview">
+        
+        <div class="invoice-header">
+            <h1>TAX INVOICE</h1>
+            <a href="{{ url_for('download_invoice_pdf', invoice_id=invoice.id) }}" class="btn">
+                Download PDF
+            </a>
+        </div>
+
+        <div class="invoice-parties-grid">
+            <div class="party-box supplier">
+                <strong>From:</strong>
+                <h4>{{ profile.name }}</h4>
+                <p>
+                    {{ profile.address.replace('\n', '<br>') | safe }}<br>
+                    <strong>GSTIN:</strong> {{ profile.gstin }}<br>
+                    <strong>Phone:</strong> {{ profile.phone or 'N/A' }}<br>
+                    <strong>Email:</strong> {{ profile.email or 'N/A' }}
+                </p>
+            </div>
+            <div class="party-box bill-to">
+                <strong>Bill To:</strong>
+                <h4>{{ customer.name }}</h4>
+                <p>
+                    {{ customer.billing_address.replace('\n', '<br>') | safe }}<br>
+                    <strong>GSTIN:</strong> {{ customer.gstin or 'N/A' }}<br>
+                    <strong>State:</strong> {{ customer.state or 'N/A' }}
+                </p>
+            </div>
+            <div class="party-box ship-to">
+                <strong>Ship To:</strong>
+                <h4>{{ customer.name }}</h4>
+                <p>
+                    {% if customer.shipping_address %}
+                        {{ customer.shipping_address.replace('\n', '<br>') | safe }}
+                    {% else %}
+                        {{ customer.billing_address.replace('\n', '<br>') | safe }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="party-box invoice-details">
+                <p>
+                    <strong>Invoice #:</strong> {{ invoice.invoice_no }}<br>
+                    <strong>Date:</strong> {{ format_date(invoice.date, profile.date_format) }}<br>
+                    <strong>E-Way Bill:</strong> {{ invoice.eway_bill_no or 'N/A' }}<br>
+                    <strong>Place of Supply:</strong> {{ invoice.place_of_supply or customer.state or 'N/A' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="transport-details">
+            <div class="detail-item"><strong>P.O. Number:</strong> {{ invoice.po_number or 'N/A' }}</div>
+            <div class="detail-item"><strong>P.O. Date:</strong> {{ format_date(invoice.po_date, profile.date_format) if invoice.po_date else 'N/A' }}</div>
+            <div class="detail-item"><strong>Transport:</strong> {{ invoice.transport_name or 'N/A' }}</div>
+            <div class="detail-item"><strong>Vehicle No:</strong> {{ invoice.vehicle_no or 'N/A' }}</div>
+            <div class="detail-item"><strong>Delivery At:</strong> {{ invoice.delivery_location or 'N/A' }}</div>
+        </div>
+
+        <div class="table-container preview">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th>HSN/SAC</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Rate</th>
+                        <th>Tax</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice.items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.hsn }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(item.rate) }}</td>
+                        <td>{{ "%.0f"|format(item.tax_percent) }}%</td>
+                        <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(item.qty * item.rate) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="invoice-summary-final">
+            <div class="summary-left">
+                <div class="tax-summary">
+                    <strong>Tax Summary:</strong>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tax Rate</th>
+                                <th>Taxable Amount</th>
+                                <th>GST Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rate, data in tax_summary.items() %}
+                            <tr>
+                                <td>{{ "%.0f"|format(rate) }}%</td>
+                                <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(data.taxable_amount) }}</td>
+                                <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(data.gst_amount) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bank-details">
+                    <strong>Bank Details:</strong>
+                    <p>
+                        <strong>Bank:</strong> {{ profile.bank_name or 'N/A' }}<br>
+                        <strong>A/C No:</strong> {{ profile.account_no or 'N/A' }}<br>
+                        <strong>IFSC:</strong> {{ profile.ifsc_code or 'N/A' }}
+                    </p>
+                </div>
+                <div class="terms-details">
+                    <strong>Terms & Conditions:</strong>
+                    <p>{{ profile.terms_and_conditions.replace('\n', '<br>') | safe if profile.terms_and_conditions else 'N/A' }}</p>
+                </div>
+            </div>
+
+            <div class="summary-right">
+                <div class="summary-box final">
+                    <div>
+                        <span>Subtotal:</span>
+                        <span>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.subtotal) }}</span>
+                    </div>
+                    <div>
+                        <span>Total GST:</span>
+                        <span>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.total_gst) }}</span>
+                    </div>
+                    <div class="grand-total">
+                        <span>Grand Total:</span>
+                        <span>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.grand_total) }}</span>
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <p>For: {{ profile.name }}</p>
+                    <br><br><br>
+                    <p>Authorized Signatory</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

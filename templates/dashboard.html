@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    
+    <nav class="main-nav">
+        <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('customer_management') }}">Customers</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container-header">
+        <h2>Invoice Dashboard</h2>
+        <a href="{{ url_for('add_invoice') }}" class="btn">+ New Invoice</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.invoice_no }}</td>
+                    <td>{{ invoice.customer.name }}</td>
+                    <td>{{ format_date(invoice.date, profile.date_format) }}</td>
+                    <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.grand_total) }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('view_invoice', invoice_id=invoice.id) }}" class="btn btn-small">View</a>
+                        <a href="{{ url_for('download_invoice_pdf', invoice_id=invoice.id) }}" class="btn btn-small btn-secondary">PDF</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">No invoices found. Create one to get started!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

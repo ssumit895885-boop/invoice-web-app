@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Invoice{% endblock %}
+
+{% block content %}
+    
+    <nav class="main-nav">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('customer_management') }}">Customers</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </nav>
+
+    <div class="form-container">
+        <h2>New Invoice</h2>
+        
+        <form action="{{ url_for('add_invoice') }}" method="POST" id="invoice-form">
+            
+            <h3>Customer & Details</h3>
+            <div class="form-grid">
+                <div class="form-group span-2">
+                    <label for="customer">Customer</label>
+                    <select id="customer" name="customer" required>
+                        <option value="" disabled {% if not selected_customer %}selected{% endif %}>Select a customer...</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}" {% if selected_customer == customer.id %}selected{% endif %}>{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="invoice_no">Invoice #</label>
+                    <input type="text" id="invoice_no" name="invoice_no" value="{{ invoice_data.invoice_no or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" value="{{ invoice_data.date or today }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="po_number">P.O. Number (optional)</label>
+                    <input type="text" id="po_number" name="po_number" value="{{ invoice_data.po_number or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="po_date">P.O. Date (optional)</label>
+                    <input type="date" id="po_date" name="po_date" value="{{ invoice_data.po_date or '' }}">
+                </div>
+            </div>
+
+            <h3>Shipping & Transport (optional)</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="eway_bill_no">E-Way Bill No.</label>
+                    <input type="text" id="eway_bill_no" name="eway_bill_no" value="{{ invoice_data.eway_bill_no or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="place_of_supply">Place of Supply</label>
+                    <input type="text" id="place_of_supply" name="place_of_supply" value="{{ invoice_data.place_of_supply or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="delivery_location">Delivery Location</label>
+                    <input type="text" id="delivery_location" name="delivery_location" value="{{ invoice_data.delivery_location or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="transport_name">Transport Name</label>
+                    <input type="text" id="transport_name" name="transport_name" value="{{ invoice_data.transport_name or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle_no">Vehicle No.</label>
+                    <input type="text" id="vehicle_no" name="vehicle_no" value="{{ invoice_data.vehicle_no or '' }}">
+                </div>
+            </div>
+            
+            <h3>Invoice Items</h3>
+            <div class="items-table">
+                <div class="item-row header">
+                    <div class="item-name">Item</div>
+                    <div class="item-hsn">HSN/SAC</div>
+                    <div class="item-qty">Qty</div>
+                    <div class="item-unit">Unit</div>
+                    <div class="item-rate">Rate / Price</div>
+                    <div class="item-tax">Tax %</div>
+                    <div class="item-total">Total</div>
+                    <div class="item-action"></div>
+                </div>
+                
+                <div id="items-container">
+                    <div class="item-row">
+                        <input type="text" name="item_name" placeholder="Item Name" required class="item-name">
+                        <input type="text" name="hsn" placeholder="HSN" class="item-hsn">
+                        <input type="number" name="qty" placeholder="1" min="1" value="1" required class="item-qty">
+                        <input type="text" name="unit" placeholder="Unit (KGS)" class="item-unit">
+                        <input type="number" name="rate" placeholder="Price" min="0" step="0.01" value="0.00" required class="item-rate">
+                        <select name="tax_percent" class="item-tax">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="12">12%</option>
+                            <option value="18" selected>18%</option>
+                            <option value="28">28%</option>
+                        </select>
+                        <span class="line-total item-total">0.00</span>
+                        <button type="button" class="btn btn-remove item-action">&times;</button>
+                    </div>
+                </div>
+                <button type="button" id="add-item" class="btn btn-primary">+ Add Item</button> </div>
+
+            <div class="summary-container">
+                <div class="summary-box">
+                    <div>Subtotal:</div>
+                    <div id="summary-subtotal">0.00</div>
+                    <div>Total GST:</div>
+                    <div id="summary-gst">0.00</div>
+                    <div class="grand-total">Grand Total:</div>
+                    <div class="grand-total" id="summary-total">0.00</div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn">Save Invoice</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
