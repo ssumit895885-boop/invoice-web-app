@@ -3,12 +3,6 @@
 {% block title %}Company Profile{% endblock %}
 
 {% block content %}
-    
-    <nav class="main-nav">
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('customer_management') }}">Customers</a>
-        <a href="{{ url_for('profile') }}" class="active">Profile</a>
-    </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

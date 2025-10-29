@@ -3,12 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    
-    <nav class="main-nav">
-        <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
-        <a href="{{ url_for('customer_management') }}">Customers</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
-    </nav>
+
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -22,7 +17,11 @@
 
     <div class="container-header">
         <h2>Invoice Dashboard</h2>
+        <!-- Only show New Invoice button if profile exists (or user logged in) -->
+        {# {% if profile %} #}
+        {# Check auth later instead of profile existence #}
         <a href="{{ url_for('add_invoice') }}" class="btn">+ New Invoice</a>
+        {# {% endif %} #}
     </div>
 
     <div class="table-container">
@@ -33,27 +32,50 @@
                     <th>Customer</th>
                     <th>Date</th>
                     <th>Amount</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for invoice in invoices %}
-                <tr>
-                    <td>{{ invoice.invoice_no }}</td>
-                    <td>{{ invoice.customer.name }}</td>
-                    <td>{{ format_date(invoice.date, profile.date_format) }}</td>
-                    <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.grand_total) }}</td>
-                    <td class="actions">
-                        <a href="{{ url_for('view_invoice', invoice_id=invoice.id) }}" class="btn btn-small">View</a>
-                        <a href="{{ url_for('download_invoice_pdf', invoice_id=invoice.id) }}" class="btn btn-small btn-secondary">PDF</a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" style="text-align: center;">No invoices found. Create one to get started!</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+    {# Check if invoices list exists and is not empty #}
+    {% if invoices %}
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.invoice_no }}</td>
+            <td>{{ invoice.customer.name if invoice.customer else 'N/A' }}</td>
+            {# Check if profile exists before trying to access its attributes #}
+            {% if profile %}
+                <td>{{ format_date(invoice.date, profile.date_format) }}</td>
+                <td>{{ get_currency_symbol(profile.currency) }}{{ "%.2f"|format(invoice.grand_total) }}</td>
+            {% else %}
+                <td>{{ invoice.date }}</td>
+                <td>{{ "%.2f"|format(invoice.grand_total) }}</td>
+            {% endif %}
+
+            {# --- NEW STATUS CELL ADDED HERE --- #}
+                <td>
+                    <span class="status-badge status-{{ invoice.status }}">{{ invoice.status }}</span>
+                </td>
+            {# --- END NEW STATUS CELL --- #}
+
+            <td class="actions">
+                <a href="{{ url_for('view_invoice', invoice_id=invoice.id) }}" class="btn btn-small">View</a>
+                <a href="{{ url_for('download_invoice_pdf', invoice_id=invoice.id) }}" class="btn btn-small btn-secondary">PDF</a>
+
+                <form action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete Invoice #{{ invoice.invoice_no }}? This cannot be undone.');">
+                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                </form>
+                </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+    <tr>
+        {# --- IMPORTANT: Update colspan --- #}
+        <td colspan="6" style="text-align: center;">No invoices found. Create one to get started!</td> {# Changed colspan from 5 to 6 #}
+        {# --- END Update colspan --- #}
+    </tr>
+    {% endif %}
+             </tbody>
         </table>
     </div>
 {% endblock %}

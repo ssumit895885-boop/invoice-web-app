@@ -3,20 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>{% block title %}Invoice App{% endblock %}</title>
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh;"> {# Flexbox styles added here #}
 
-    <div class="container">
-        
+    <nav class="main-nav">
+        <a href="{{ url_for('dashboard') }}" style="padding: 5px 10px; border-bottom: none;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SkTech Logo" style="height: 60px; vertical-align: middle;"> {# Ensure logo.png is in static/images #}
+        </a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('customer_management') }}">Customers</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}" style="float: right;">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages"> {# Ensure styles for this exist #}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div style="flex: 1;"> {# This wrapper makes the content area flexible #}
         {% block content %}
+        {# Page-specific content like forms or tables will be inserted here #}
         {% endblock %}
-        
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <footer style="text-align: center; margin-top: auto; padding: 20px 0; border-top: 1px solid var(--border-color); color: var(--text-light); font-size: 0.9em;"> {# margin-top: auto is key #}
+        <p>&copy; {{ now.year }} Invoice App. All rights reserved.</p> {# Make sure 'now' is passed via context processor #}
+        <p>Developed by: <strong>SkTech</strong></p>
+    </footer>
+
 </body>
 </html>
