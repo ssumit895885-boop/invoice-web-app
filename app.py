@@ -78,6 +78,7 @@ class CompanyProfile(db.Model):
     date_format = db.Column(db.String(20), nullable=False, default='DD/MM/YYYY')
     terms_and_conditions = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    invoices = db.relationship('Invoice', backref='profile_owner', lazy=True, cascade="all, delete-orphan")
 
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -88,9 +89,10 @@ class Customer(db.Model):
     state = db.Column(db.String(50))
     contact_person = db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    invoices = db.relationship('Invoice', backref='customer_for_delete_check', lazy=True)
+    invoices = db.relationship('Invoice', backref='customer', lazy=True, cascade="all, delete-orphan")
 
 class Invoice(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     invoice_no = db.Column(db.String(50), nullable=False)
     date = db.Column(db.String(50), nullable=False)
