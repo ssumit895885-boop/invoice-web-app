@@ -759,3 +759,26 @@ h1, h2, h3 {
     color: #222;
     margin-top: 0;
 }
+/* --- 15. PASSWORD TOGGLE EYE --- */
+.password-wrapper {
+    position: relative;
+}
+
+/* Style the 'Show'/'Hide' text */
+#toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px; /* Aligns it inside the input box */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-light); /* Uses your existing color variable */
+    font-weight: 600;
+    font-size: 0.9em;
+    user-select: none; /* Prevents text selection on click */
+}
+
+/* Adjust the password input to prevent text from overlapping the button */
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 60px !important; /* Adds space on the right for the 'Show' text */
+}
