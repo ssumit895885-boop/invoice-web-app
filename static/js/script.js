@@ -104,10 +104,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Safety check: Don't remove the *last* item row
                     if (itemsContainer.querySelectorAll(".item-row").length > 1) {
                         // Find the parent .item-row and remove it
-          _             event.target.closest(".item-row").remove();
+                        event.target.closest(".item-row").remove();
                         // After removing, recalculate everything
                         calculateTotals();
-                  _ } else {
+                    } else {
                         alert("You must have at least one item.");
                     }
                 }
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (event.target.tagName === "INPUT" || event.target.tagName === "SELECT") {
                     // Recalculate everything
                     calculateTotals();
-                }
+      M         }
             });
 
             // --- Initial Calculation ---
@@ -128,23 +128,31 @@ document.addEventListener("DOMContentLoaded", function() {
     } // --- END of if(invoiceForm) block ---
 
 
-    // --- 2. PASSWORD TOGGLE SCRIPT (NEW) ---
-    const togglePassword = document.getElementById('toggle-password');
+    // --- 2. PASSWORD PEEK SCRIPT (NEW & IMPROVED) ---
+    const peekButton = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password');
 
     // Only run this code if we are on a page that *has* the toggle button
-    if (togglePassword && passwordInput) {
+    if (peekButton && passwordInput) {
         
-        togglePassword.addEventListener('click', function() {
-            // Check the current type of the input
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Change the "Show" / "Hide" text
-            if (type === 'password') {
+        // Show password on mousedown (when you press and hold)
+        peekButton.addEventListener('mousedown', function() {
+            passwordInput.setAttribute('type', 'text');
+            this.textContent = 'Hide';
+        });
+        
+        // Hide password on mouseup (when you release)
+        peekButton.addEventListener('mouseup', function() {
+            passwordInput.setAttribute('type', 'password');
+            this.textContent = 'Show';
+        });
+
+        // Also hide if the mouse leaves the button while pressed
+        peekButton.addEventListener('mouseleave', function() {
+            // Check if it's currently text (meaning it was being held down)
+            if (passwordInput.getAttribute('type') === 'text') {
+                passwordInput.setAttribute('type', 'password');
                 this.textContent = 'Show';
-            } else {
-                this.textContent = 'Hide';
             }
         });
     }
