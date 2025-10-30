@@ -366,16 +366,33 @@ def download_invoice_pdf(invoice_id):
     customer = invoice.customer; buffer = io.BytesIO()
     
     # --- Font Registration & Styles ---
-    FONT_NORMAL='Helvetica'; FONT_BOLD='Helvetica-Bold';
-    try: 
-        # Ensure you have 'arial.ttf' and 'arialbd.ttf' in your project directory
-        arial_normal_path='arial.ttf'; arial_bold_path='arialbd.ttf'
-        pdfmetrics.registerFont(TTFont('Arial', arial_normal_path))
-        pdfmetrics.registerFont(TTFont('Arial-Bold', arial_bold_path))
-        addMapping('Arial', 1, 0, 'Arial-Bold')
-        FONT_NORMAL='Arial'; FONT_BOLD='Arial-Bold'
-    except Exception as e: 
-        print(f"WARNING: Arial font registration failed. Using Helvetica. Error: {e}")
+    FONT_NORMAL = 'NotoSans'
+    FONT_BOLD = 'NotoSans-Bold'
+    
+    try:
+        # Get the absolute path to the fonts directory
+        # (This is necessary for Render to find the files)
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        fonts_dir = os.path.join(base_dir, 'fonts')
+        
+        regular_font_path = os.path.join(fonts_dir, 'NotoSans-Regular.ttf')
+        bold_font_path = os.path.join(fonts_dir, 'NotoSans-Bold.ttf')
+
+        pdfmetrics.registerFont(TTFont(FONT_NORMAL, regular_font_path))
+        pdfmetrics.registerFont(TTFont(FONT_BOLD, bold_font_path))
+        
+        # Add mapping for bold/italic (though we only have bold)
+        addMapping(FONT_NORMAL, 0, 0, FONT_NORMAL) # normal
+        addMapping(FONT_NORMAL, 1, 0, FONT_BOLD)   # bold
+        addMapping(FONT_NORMAL, 0, 1, FONT_NORMAL) # italic (fallback to normal)
+        addMapping(FONT_NORMAL, 1, 1, FONT_BOLD)   # bold-italic (fallback to bold)
+        
+        print(f"Successfully registered fonts: {FONT_NORMAL}, {FONT_BOLD}")
+
+    except Exception as e:
+        print(f"WARNING: Font registration failed: {e}. Falling back to Helvetica.")
+        FONT_NORMAL = 'Helvetica'
+        FONT_BOLD = 'Helvetica-Bold'
     
     styles=getSampleStyleSheet(); theme_color=colors.HexColor('#4A90E2'); light_bg_color=colors.HexColor('#F8F9FA')
     style_normal=ParagraphStyle(name='NormalBase', parent=styles['Normal'], fontName=FONT_NORMAL, fontSize=9, leading=12)
